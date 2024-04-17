@@ -18,10 +18,6 @@ $userName = (Get-ChildItem -Path \\wsl.localhost\Ubuntu\home\ | Select -First 1)
 
 Write-Host "Hello, $userName"
 
-#﻿# Refer to https://github.com/vgmstream/vgmstream/blob/master/src/meta/hca_keys.h (Line 1177 in the comment not the code)
-## The keys from there are backwards so the first 8 HEX are key1 and the last 8 HEX are key0
-
-
 if ((Test-Path -Path "\\wsl.localhost\Ubuntu\home\$userName\wcri\") -eq $false) {
     Write-Host "This is your first time? Setting up Linux ENV..."
     wsl.exe -u root --exec apt update -y
