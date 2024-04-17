@@ -49,10 +49,10 @@ if ((Test-Path -Path ".\*.mp4") -eq $false) {
 Get-ChildItem -Path ".\*.mp4" | ForEach-Object {
     Write-Host "=== Encode Video $($_.BaseName) ==="
     Copy-Item -Path "$($_.FullName)" -Destination ".\temp\input.mp4" -ErrorAction Stop
-    Write-Host "Encode MP4 -> MPEG4 + PCM..."
-    & wsl.exe --exec ffmpeg -y -loglevel warning -hide_banner -stats -i ${wslPath}/temp/input.mp4 -vf "scale=720:408,crop=720:408" -c:v mpeg4 -c:a pcm_s16le ${wslPath}/temp/input-video.avi -vn -c:a pcm_s16le ${wslPath}/temp/input-audio.wav
-    Write-Host "Encode MPEG4 + PCM -> Softdec.Prime @ 360000kbps..."
-    & ".\scaleform\medianoche.exe" -preview=off -gop_closed=on -gop_i=1 -gop_p=4 -gop_b=2 -video00="temp/input-video.avi" -output="temp/input-video.usm" -bitrate=36000000 -audio00="temp/input-audio.wav"
+    Write-Host "Encode MP4 -> DivX + PCM..."
+    & wsl.exe --exec bash -c "ffmpeg -y -loglevel warning -hide_banner -stats -i ${wslPath}/temp/input.mp4 -b:v 2200k -vf `"scale=720:408,crop=720:408`" -c:v mpeg4 -c:a pcm_s16le ${wslPath}/temp/input-video.avi -vn -c:a pcm_s16le ${wslPath}/temp/input-audio.wav"
+    Write-Host "Encode DivX + PCM -> Softdec.Prime @ 360000kbps..."
+    & ".\scaleform\medianoche.exe" -preview=off -gop_closed=on -gop_i=1 -gop_p=4 -gop_b=2 -framerate 30 -video00="temp/input-video.avi" -output="temp/input-video.usm" -bitrate=36000000 -audio00="temp/input-audio.wav"
     Sleep -Seconds 5
     While ((Get-Process -Name medianoche -ErrorAction SilentlyContinue | Measure-Object -Line).Lines -gt 0) { Sleep -Seconds 5 }    
     if ((Test-Path -Path ".\temp\input-video.usm") -eq $false) {
